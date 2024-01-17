@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>jQuery</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .selected {
+            background-color: goldenrod;
+        }
+
+        .right {
+          text-align: right;
+        }
+
+        .left {
+          text-align: left;
+        }
+
+        .blue {
+          background-color: skyblue;
+        }
+
+        .green {
+          background-color: green;
+        }
+
+        .emphasis {
+          font-weight: bold;
+        }
+    </style>
+  </head>
+  <body>
+    <div>
+      <button type="button" id="insertBtn">+</button>
+      <select>
+        <option>일반</option>
+        <option>VIP</option>
+      </select>
+      <table id="list">
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="allChk" /></th>
+            <th>No.</th>
+            <th>구분</th>
+            <th>아이디</th>
+            <th>비밀번호</th>
+            <th>이름</th>
+            <th>가입날짜</th>
+            <th>Del</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="selected">
+            <td><input type="checkbox"/></td>
+            <td>001</td>
+            <td>일반</td>
+            <td name="id">user01</td>
+            <td><input type="password" value="1234"></td>
+            <td><p>한지수</p></td>
+            <td>2023-10-31</td>
+            <td><button type="button">Del</button></td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"/></td>
+            <td>002</td>
+            <td>VIP</td>
+            <td name="id">user99</td>
+            <td><input type="password" value="9999"></td>
+            <td><p id="here">강호동</p></td>
+            <td>2023-11-11</td>
+            <td><button type="button">Del</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+    //1. 헤더 구성하는 항목 → 별도의 배열
+      let headList = $('th');
+      headList = $('#list thead th'); 
+      
+      let headAry = [];
+      //headList는 jquery객체지만, 내부값 하나씩 불러오는 경우(idx, each 사용) 그 순간부터 javascript로 접근해야함.
+      headList.each((idx, tag)=>{
+        //javascript
+        console.log(tag.textContent); 
+        //jQuery 객체로 다시 변환
+        console.log($(tag).text());
+        
+        let value = null;
+        if(idx == 0){
+          value = $(tag).children().attr('type'); // children - 하위요소(checkbox)의 속성값
+        }else{
+          value = tag.textContent;
+        }
+        headAry.push(value);
+      }); 
+      console.log(headAry);
+
+      
+    //2. 특정 속성 값만 사용
+      console.log($('#here')); 
+      console.log($('.selected'))
+      console.log($('[name="id"]'));
+
+    //3. 복합선택자 - id 속성이 here인 태그를 하위요소로 두는 tr 태그
+    //3-1.) 
+      console.log($('#here').parent().parent()); //확실한거(p) 찾고 > 부모찾아가기.
+      console.log($('#here').closest('tr')); //★ closest : 가장 가까운 상위요소 찾기.
+      
+    //3-2.)
+      console.log($('tr:has(#here)')); // ~조건 가진 태그 탐색할 떄 쓰는 has
+    
+    </script>
+
+    <script>
+    // ▷ id가 here인 애의 password 값? (p>td>td>input)
+    // js방식
+    let jsPwd = document.getElementById('here')
+                        .parentElement // td > p#here
+                        .previousElementSibling // td > input:password
+                        .firstElementChild // input:password
+                        .value;
+      console.log(jsPwd);   
+
+    //jQuery 방식
+    let jqPwd = $('#here')
+                .parent()
+                .prev()
+                .children().first() //하위요소(children) 결과 중 1번쨰
+                .val();
+      console.log(jqPwd); 
+      
+    // ▷ password type 바꾸기  
+    $('input[type="password"]').prop('type', 'text'); //공백 들어가지않게 주의! 
+    
+    //▶ css
+    //표에 border 넣기
+    //그룹선택자 : 서로 다른 성격가진 애들 한꺼번에 선택하게 해줌! not선택자로 제외시키기
+    $('#list, #list *').not('input, p').css('border', '1px solid black'); 
+
+    </script>
+
+    <script>
+    // ■ Event 처리
+     
+      /* on('event명', function(event){ 
+              ※ "이벤트객체" 
+              - field : target(이벤트발생), currentTarget(동작발생)
+              - method : preventDefault() (이미등록된 이벤트 무력화), stopPropagat)ion() (이벤트버블링 막는거)
+       })
+      */
+
+    // ▷ 각 tr에 이벤트 걸기
+      //1. js - 배열에 대해서 동시에 이벤트 걸 수 x => 반복문돌려서처리.
+      /*
+      document.querySelectorAll('#list tbody > tr')
+            .forEach(trTag => {
+              trTag.addEventListener('click', function(event){
+                event.currentTarget.classList.toggle('selected'); //현재 선택된 대상.클래스정보.
+              })
+            });
+      */
+
+      //2. jQuery - 여러건에 대해서 동일한 속성값, 이벤트 처리할 떄 반복문 필요없음! 
+        $('#list tbody > tr').on('click', function(event){
+            $(event.currentTarget).toggleClass('selected'); 
+        });
+
+    </script>
+
+    <script>
+    //▶ Del 버튼에 click 이벤트 
+    //contains : text로 찾을 수 있음.
+      $('tbody button:contains(Del)').on('click', function(event){
+        event.stopPropagation(); //중첩된거 이벤트버블링 막기!
+        //1) 선택한 tr 복사해서 맨 마지막 줄에 추가하기
+          let selectedTr = $(event.currentTarget).closest('tr'); //복사할 target
+          let cloneTr = selectedTr.clone(); // 선택한 요소 통째로 복사 .(이벤트를 복사하진 못함! )
+          $('#list tbody').append(cloneTr); // 자식요소로 추가
+
+        //2) 선택한 tr을 삭제
+          selectedTr.remove(); //해당 태그를 삭제(제거)하는 remove . 자체를 삭제함.
+          //selectedTr.empty();  //해당 태그가 가진 내부요소 비우는거.
+      });
+
+
+    //▶ Select 태그에 change 이벤트 
+      $('select').on('change', function(event){
+        //상위요소부터 만들어가기
+
+        //1번째 td
+        let trTag = $('<tr></tr>'); //tr 태그 생성! 
+
+        let tdTag = $('<td/>'); // 하나에 태그에 닫는태그로 이렇게 생성해도 ok!
+        let inputTag = $('<input type="checkbox" />'); //태그가 가진 속성도 입력 가능! 
+           console.log(inputTag);
+        tdTag.append(inputTag);
+        trTag.append(tdTag);
+
+        //2번째 td
+        tdTag = $('<td />').text('003');
+        trTag.append(tdTag);
+
+        //3번쨰 td
+        tdTag = $('<td />').text(event.currentTarget.value); //select에서 선택한 값.
+        trTag.append(tdTag);
+
+        //4번째 td
+        tdTag = $('<td />').attr('name', 'id').text('user03');
+        trTag.append(tdTag);
+
+        //5번째 td
+        tdTag = $('<td />')
+                .append($('<input/>').attr('type', 'password').val(5555)); //
+        trTag.append(tdTag);
+
+        //6번째 td
+        tdTag = $('<td><p>이한나</p></td>');
+        trTag.append(tdTag);
+
+        //7번째 
+        tdTag = $('<td />').text('2024-01-17');
+        trTag.append(tdTag);
+
+        //8번째 td
+        tdTag = $('<td />');
+        let btn = $('<button />').attr('type', 'button').text('Del');
+        tdTag.append(btn);
+        trTag.append(tdTag);
+
+          console.log("콘솔일해")
+          console.log(trTag);
+          //DOM과 연결해주기!! 
+        $('#list tbody').append(trTag);
+
+      });
+
+
+    //▶ 전체 선택(checkBox) 시 이벤트 처리
+      $('#allChk').on('click', function(event){
+        let result = event.currentTarget.checked; // checked 자체가 속성임! 
+        $(':checkbox').prop('checked', result) // input의 type 속성 빠르게 검색 - input 생략하고 : 붙이기! 
+      });
+
+    </script>
+
+  </body>
+</html>
