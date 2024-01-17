@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .blue{
+            color : skyblue;
+        }
+
+        .red{
+            color: pink;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Where do you want to go? </h1>
+        <h2>Travel Destinations</h2>
+        <p> Plan your next adventure.</p>
+        <ul id="destinations">
+            <li>Rome</li>
+            <li>Paris</li>
+            <li class="blue">Rio</li>
+        </ul>
+    </div>
+
+
+    <script>
+
+     //jquery사용문법
+
+        //let result = $('#destinations').css('color', 'grey'); //배열에 대해서 한번에 동일하게 스타일 속성 적용 가능. 
+        //console.log(typeof result, result);
+
+
+    //■ SELECTOR - 탐색
+        //# : id 속성
+        $('#destinations');
+        console.log($('#destinations'));
+
+        //. : class 속성
+        $('.blue');
+        console.log($('.blue'));
+
+        //tagName
+        $('h1')
+        console.log($('h1'));
+
+        //[attribute] : 일반속성 
+        $('[name]');
+        console.log($('[name]'));
+
+        //관계기반 ( 공백:하위, >:자식요소)
+        $('li ul');
+        console.log($('ul > li'));
+
+
+    /* 
+        innerHtml : html() - tag 까지 다 보여줌.
+        textContent : text() - 안에 text만 보여줌.
+        class : addClass(), removeClass(), hasClass() : 내가원하는 class값 있는지 찾기 , toggleClass() : 원하는 값 갖고있으면 삭제, 없으면 추가
+        value : val()
+        style : css()
+        기타 - 속성 다루기 : prop() -dom의 node의 property , attr() -html태그속성  (*prop 우선적으로 쓰기!)
+    */    
+        let result = $('ul').html();
+            console.log(result);
+
+        result = $('ul').text();
+            console.log(result);
+
+        $('h1').text('hello, jQuery! '); //-> 값 바뀜.
+
+        $('h2').css('background-color', 'green'); // 값 주기
+        result = $('h2').css('background-color'); // 값 불러오기
+            console.log(result);
+
+        $('p').attr('name', 'dumi'); // name속성에 값준거
+
+
+    </script>
+
+</body>
+</html>
