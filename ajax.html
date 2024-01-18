@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- jquery CDN jquery 3.xx  uncompressed -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+
+        /* 
+        $.ajax('', {
+
+            type : '',  
+                    ← method. default- get
+            contentType : '', 
+                    ← 서버로 전송할 데이터의 content-type,  default : application/x-www-form-urlencoded , JSON : application/json
+            data : { data에 들어가는 타입은 반드시 "객체"형태 }, 
+                    ← 서버로전송할 데이터 - object의 field와 value 값 => queryString요구
+            beforeSend : function(xhr){   
+                    ← data랑 상관없이 서버로 통신일으키기 직전에 추가해서 보낼 수 있음. ex) token 
+            }
+        })
+        .done(result => console.log(result)) //통신성공시 (결과 보장은 x) + 전환작업 필요x
+        .done(result => console.log(result)) //원하는만큼 추가 가능.
+        .fail(err => console.log(err)) // 통신실패시      
+        */
+
+    //fetch .then. catch 구조랑 비슷! 
+    //전체조회
+       $.ajax('http://localhost:8080/app/emps')
+        .done(result => {
+            console.log(result);
+        })
+        .fail(err => console.log(err));
+        
+    //단건조회
+        $.ajax('http://localhost:8080/app/emps/100')
+        .done(result => {
+            console.log('EmpInfo', result);
+        })
+        .fail(err => console.log(err));
+    
+    //등록
+        let info = {
+            lastName : 'Ann',
+            email : 'ann@naver.com', //unique 제약조건
+            hireDate : '2024-01-18', //yyyy-MM-dd
+            jobId : 'IT_PROG', //fk
+            salary : 1000
+        }
+
+        $.ajax('http://localhost:8080/app/emps', {
+            type : 'post',
+            contentType : 'application/json', //@RequestBody 때문에
+            data : JSON.stringify(info) // 'application/json' 얘랑 set로 움직임
+        })
+        .done(result => {
+            console.log('Insert', result);
+        })
+        .fail(err => console.log(err));
+
+        
+    
+</script>
+</body>
+</html>
