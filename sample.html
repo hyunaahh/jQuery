@@ -82,7 +82,7 @@
       headList = $('#list thead th'); 
       
       let headAry = [];
-      //headList는 jquery객체지만, 내부값 하나씩 불러오는 경우(idx, each 사용) 그 순간부터 javascript로 접근해야함.
+      //★ headList는 jquery객체지만, 내부값 하나씩 불러오는 경우(idx, each 사용) 그 순간부터 javascript로 접근해야함.
       headList.each((idx, tag)=>{
         //javascript
         console.log(tag.textContent); 
